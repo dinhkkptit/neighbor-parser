@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="static/favicon.ico">
+    <title>Neighbor Parser</title>
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="static/DataTables/datatables.min.css" rel="stylesheet" />
+    <link href="static/fontawesome/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="static/JointJS/dist/joint.css" />
+    <link rel="stylesheet" href="static/jquery-ui-1.13.2/jquery-ui.min.css">
+    <link href="static/style.css" rel="stylesheet" />
+    <script src="static/popper/popper.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="static/JQuery/jquery-3.6.4.min.js"></script>
+    <script src="static/DataTables/datatables.min.js"></script>
+    <script src="static/jquery-ui-1.13.2/jquery-ui.min.js"></script>
+    <script src="static/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+    <script src="static/Lodash/lodash.min.js"></script>
+    <script src="static/Backbone/backbone-min.js"></script>
+    <script src="static/Dagre/dagre.min.js"></script>
+    <script src="static/Dagre/graphlib.min.js"></script>
+    <script src="static/JointJS/dist/joint.js"></script>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse " id="navbarSupportedContent">
+          <div class="mx-auto">
+            <a class="navbar-brand">
+              <img src="static/logo.png" width="40">
+            </a>
+            <a class="navbar-brand h1">Neighbor Parser</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="accordion mt-5" id="instructions">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingInstructions">
+            <button class="accordion-button collapsed" style="background-color: #f7f7f7;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInstructions" aria-expanded="false" aria-controls="collapseInstructions">
+              <div class="col text-center">
+                <div class="h5 mt-1">
+                  <i class="fa-solid fa-book me-2"></i>Instructions
+                </div>
+              </div>
+            </button>
+          </h2>
+          <div id="collapseInstructions" class="accordion-collapse collapse" data-bs-parent="#instructions">
+            <div class="accordion-body">
+              <div class="d-flex flex-row bd-highlight mb-3">
+                <div class="p-2">
+                  <img src="static/logo.png" alt="" width="70" class="me-2">
+                </div>
+                <div class="p-2">
+                  <h3>CDP and LLDP Neighbor Parser</h3>
+                  <span class="text-secondary fst-italic">Tabulate your Cisco network neighbors</span>
+                </div>
+              </div>
+              <hr class="border-2 border-top border-secondary">
+              <div class="fs-6 fw-light">
+                <h4><i class="fa-solid fa-list me-2"></i>How To Use</h4>
+                <ol class="list" style="font-weight: bold;">
+                  <li class="mb-3"><span>Run one or more of the below commands on your Cisco device</span></li>
+                  <ul>
+                    <li class="mb-2"><span><code>show cdp neighbors</code></span></li>
+                    <li class="mb-2"><span><code>show cdp neighbors detail</code></span></li>
+                    <li class="mb-2"><span><code>show lldp neighbors</code></span></li>
+                    <li class="mb-2"><span><code>show lldp neighbors detail</code></span></li>
+                  </ul>
+                  <li class="mb-3"><span>Copy the text output from the device</span></li>
+                  <li class="mb-3"><span>Paste it into the <span class="header-reference"><strong><i class="fa-solid fa-code me-2"></i>Neighbor Output</strong></span> field below</span></li>
+                  <li class="mb-3"><span>Adjust the <span class="header-reference"><strong><i class="fa-solid fa-diagram-project me-2"></i>Diagram</strong></span> by:
+                  <ul>
+                    <li class="mb-2">
+                      <span>Zooming in/out with the <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline-secondary"><i class="fa-solid fa-minus"></i></button>
+                        </div> buttons
+                      </span>
+                    </li>
+                    <li class="mb-2"><span>Opening the diagram settings window with the <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-gear"></i></button> button and changing the settings</span></li>
+                  </ul>
+                  <li class="mb-3"><span>Adjust/export the <span class="header-reference"><strong><i class="fa-solid fa-table me-2"></i>Neighbors</strong></span> table by:</span>
+                    <ul>
+                      <li class="mb-2"><span>Dragging the columns to re-order them</span></li>
+                      <li class="mb-2"><span>Adding/removing columns using the <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-gear"></i></button> button</span></li>
+                      <li class="mb-2"><span>Clicking the <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-copy"></i></button> button to copy tab-separated data (ready to paste into a spreadsheet) to your clipboard</span></li>
+                      <li class="mb-2"><span>Clicking the <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-download"></i></button> button to download a CSV of the neighbor table</span></li>
+                    </ul>
+                  </li>
+                </ol>
+              </div>
+              <hr class="border-2 border-top border-secondary">
+              <div class="fs-6">
+                <h4><i class="fa-solid fa-flask me-2"></i>Try It</h4>
+                <p>Copy one or more of the examples below and paste it into the "Neighbor Output" field below to convert it to a table</p>
+                <div class="accordion" id="outputExamples">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="cdpDetailHeader">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cdpDetailExample" aria-expanded="true" aria-controls="cdpDetailExample">
+                        <div class="container">
+                          <div class="row">
+                            <div class="col d-flex align-items-center">
+                              <h5 class="mt-1">Example: <code>show cdp neighbors detail</code></h5>
+                            </div>
+                            <div class="d-none d-md-block col col-md-1">
+                              <div class="d-flex align-items-center justify-content-end">
+                                <div class="flex-shrink-1 pe-2">
+                                  <h5 class="mt-1"><span class="badge bg-primary ">CDP</span></h5>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </h2>
+                    <div id="cdpDetailExample" class="accordion-collapse collapse show" aria-labelledby="cdpDetailHeader" data-bs-parent="#outputExamples">
+                      <div class="accordion-body">
+                        <div class="form-group textarea-container highlight">
+                          <textarea class="form-control example-textarea highlight bg-light" rows="8" readonly>SWITCH#show cdp neighbors detail
+-------------------------
+Device ID: INT2.example.com
+Entry address(es):
+  IP address: 10.0.0.14
+Platform: cisco ASR1001-X,  Capabilities: Router IGMP
+Interface: GigabitEthernet2/0/10,  Port ID (outgoing port): GigabitEthernet0
+Holdtime : 131 sec
+
+Version :
+Cisco IOS Software [Fuji], ASR1000 Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.9.3, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2019 by Cisco Systems, Inc.
+Compiled Wed 20-Mar-19 08:02 by mcpre
+
+advertisement version: 2
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.14
+
+-------------------------
+Device ID: INT1.example.com
+Entry address(es):
+  IP address: 10.0.0.13
+Platform: cisco ASR1001-X,  Capabilities: Router IGMP
+Interface: GigabitEthernet1/0/10,  Port ID (outgoing port): GigabitEthernet0
+Holdtime : 150 sec
+
+Version :
+Cisco IOS Software [Fuji], ASR1000 Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.9.3, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2019 by Cisco Systems, Inc.
+Compiled Wed 20-Mar-19 08:02 by mcpre
+
+advertisement version: 2
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.13
+
+-------------------------
+Device ID: CORE2.example.com(SERIAL)
+Entry address(es):
+  IP address: 10.0.16.3
+Platform: N9K-C93180YC-EX,  Capabilities: Router Switch IGMP CVTA phone port
+Interface: TenGigabitEthernet2/0/1,  Port ID (outgoing port): Ethernet1/46
+Holdtime : 147 sec
+
+Version :
+Cisco Nexus Operating System (NX-OS) Software, Version 9.3(8)
+
+advertisement version: 2
+Native VLAN: 1
+Duplex: full
+
+-------------------------
+Device ID: ESX9.example.com
+Entry address(es):
+Platform: VMware ESXi,  Capabilities: Switch
+Interface: GigabitEthernet1/0/13,  Port ID (outgoing port): vmnic0
+Holdtime : 127 sec
+
+Version :
+Releasebuild-19482537
+
+advertisement version: 2
+VTP Management Domain: ''
+Duplex: full
+
+-------------------------
+Device ID: ESX9.example.com
+Entry address(es):
+Platform: VMware ESXi,  Capabilities: Switch
+Interface: GigabitEthernet2/0/13,  Port ID (outgoing port): vmnic1
+Holdtime : 127 sec
+
+Version :
+Releasebuild-19482537
+
+advertisement version: 2
+VTP Management Domain: ''
+Duplex: full
+
+-------------------------
+Device ID: CORE1.example.com(SERIAL)
+Entry address(es):
+  IP address: 10.0.16.2
+Platform: N9K-C93180YC-EX,  Capabilities: Router Switch IGMP CVTA phone port
+Interface: TenGigabitEthernet1/0/1,  Port ID (outgoing port): Ethernet1/46
+Holdtime : 147 sec
+
+Version :
+Cisco Nexus Operating System (NX-OS) Software, Version 9.3(8)
+
+advertisement version: 2
+Native VLAN: 1
+Duplex: full
+
+-------------------------
+Device ID: ROUTER1.example.com
+Entry address(es):
+  IP address: 10.0.0.20
+  IPv6 address: 2001:0DB8:0:6400::20  (global unicast)
+  IPv6 address: FE80::5250  (link-local)
+Platform: Cisco CISCO2901/K9,  Capabilities: Router Source-Route-Bridge Switch
+Interface: GigabitEthernet1/0/17,  Port ID (outgoing port): GigabitEthernet0/0
+Holdtime : 177 sec
+
+Version :
+Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.7(3)M5, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2019 by Cisco Systems, Inc.
+Compiled Fri 27-Sep-19 05:10 by prod_rel_team
+
+advertisement version: 2
+VTP Management Domain: ''
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.20
+
+-------------------------
+Device ID: ROUTER2.example.com
+Entry address(es):
+  IP address: 10.0.0.26
+  IPv6 address: 2001:0DB8:0:6400::26  (global unicast)
+  IPv6 address: FE80::AC30  (link-local)
+Platform: Cisco CISCO2901/K9,  Capabilities: Router Source-Route-Bridge Switch
+Interface: GigabitEthernet2/0/17,  Port ID (outgoing port): GigabitEthernet0/0
+Holdtime : 165 sec
+
+Version :
+Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.7(3)M7, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2020 by Cisco Systems, Inc.
+Compiled Tue 01-Sep-20 15:17 by prod_rel_team
+
+advertisement version: 2
+VTP Management Domain: ''
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.26
+
+-------------------------
+Device ID: ROUTER3.example.com
+Entry address(es):
+  IP address: 10.0.0.19
+  IPv6 address: 2001:0DB8:0:6400::19  (global unicast)
+  IPv6 address: FE80::7350  (link-local)
+Platform: Cisco CISCO2901/K9,  Capabilities: Router Source-Route-Bridge Switch
+Interface: GigabitEthernet1/0/14,  Port ID (outgoing port): GigabitEthernet0/0
+Holdtime : 160 sec
+
+Version :
+Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.7(3)M5, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2019 by Cisco Systems, Inc.
+Compiled Fri 27-Sep-19 05:10 by prod_rel_team
+
+advertisement version: 2
+VTP Management Domain: ''
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.19
+
+-------------------------
+Device ID: MDS1.example.com(SERIAL)
+Entry address(es):
+  IP address: 10.0.0.68
+Platform: DS-C9148-16P-K9,  Capabilities: Router Switch CVTA phone port
+Interface: GigabitEthernet1/0/11,  Port ID (outgoing port): mgmt0
+Holdtime : 149 sec
+
+Version :
+Cisco Nexus Operating System (NX-OS) Software, Version 6.2(1)
+
+advertisement version: 2
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.68
+
+-------------------------
+Device ID: MDS2.example.com(SERIAL)
+Entry address(es):
+  IP address: 10.0.0.69
+Platform: DS-C9148-16P-K9,  Capabilities: Router Switch CVTA phone port
+Interface: GigabitEthernet2/0/11,  Port ID (outgoing port): mgmt0
+Holdtime : 133 sec
+
+Version :
+Cisco Nexus Operating System (NX-OS) Software, Version 6.2(1)
+
+advertisement version: 2
+Duplex: full
+Management address(es):
+  IP address: 10.0.0.69
+
+
+Total cdp entries displayed : 11
+SWITCH#</textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="lldpDetailHeader">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lldpDetailExample" aria-expanded="false" aria-controls="lldpDetailExample">
+                        <div class="container">
+                          <div class="row">
+                            <div class="col d-flex align-items-center">
+                              <h5 class="mt-1">Example: <code>show lldp neighbors detail</code></h5>
+                            </div>
+                            <div class="d-none d-md-block col col-md-1">
+                              <div class="d-flex align-items-center justify-content-end">
+                                <div class="flex-shrink-1 pe-2">
+                                  <h5 class="mt-1"><span class="badge bg-success ">LLDP</span></h5>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </h2>
+                    <div id="lldpDetailExample" class="accordion-collapse collapse" aria-labelledby="lldpDetailHeader" data-bs-parent="#outputExamples">
+                      <div class="accordion-body">
+                        <div class="form-group textarea-container highlight">
+                          <textarea class="form-control example-textarea highlight bg-light" rows="8" readonly>SW1#show lldp neighbors detail
+------------------------------------------------
+Local Intf: Te1/0/1
+Chassis id: 0000.0000.0001
+Port id: Ethernet1/46
+Port Description: SW1:Te1/0/1
+System Name: CORE1.example.com
+
+System Description:
+Cisco Nexus Operating System (NX-OS) Software 9.3(8)
+TAC support: http://www.cisco.com/tac
+Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
+
+Time remaining: 111 seconds
+System Capabilities: B,R
+Enabled Capabilities: B,R
+Management Addresses:
+    Other: 2C FF 00 FF 00 FF 01
+Auto Negotiation - not supported
+Physical media capabilities - not advertised
+Media Attachment Unit type - not advertised
+Vlan ID: 1
+
+------------------------------------------------
+Local Intf: Gi1/0/10
+Chassis id: 0000.0000.0002
+Port id: Gi0
+Port Description: OOB Management Link
+System Name: INT1.example.com
+
+System Description:
+Cisco IOS Software [Fuji], ASR1000 Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.9.3, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2019 by Cisco Systems, Inc.
+Compiled Wed 20-Mar-19 08:02 by mcpre
+
+Time remaining: 116 seconds
+System Capabilities: B,R
+Enabled Capabilities: R
+Management Addresses:
+    IP: 10.0.0.13
+    IPV6: 2001:0DB8::1
+Auto Negotiation - not supported
+Physical media capabilities - not advertised
+Media Attachment Unit type - not advertised
+Vlan ID: - not advertised
+
+------------------------------------------------
+Local Intf: Gi2/0/2
+Chassis id: 0000.0000.0003
+Port id: 0000.0000.1003
+Port Description: eth1
+System Name: STOR02-ct1
+
+System Description:
+FlashArray FA-m20r2 STOR02-ct1 202000000000+asdfasdf-53x
+
+Time remaining: 3 seconds
+System Capabilities: B,W,R,S
+Enabled Capabilities: B
+Management Addresses - not advertised
+Auto Negotiation - supported, enabled
+Physical media capabilities:
+    1000baseT(FD)
+    Pause(FD)
+    100base-TX(FD)
+    100base-TX(HD)
+    10base-T(FD)
+    10base-T(HD)
+Media Attachment Unit type: 30
+Vlan ID: - not advertised
+
+------------------------------------------------
+Local Intf: Gi2/0/1
+Chassis id: 0000.0000.0004
+Port id: 0000.0000.1004
+Port Description: eth0
+System Name: STOR02-ct1
+
+System Description:
+FlashArray FA-m20r2 STOR02-ct1 202000000000+asdfasdf-53x
+
+Time remaining: 3 seconds
+System Capabilities: B,W,R,S
+Enabled Capabilities: B
+Management Addresses - not advertised
+Auto Negotiation - supported, enabled
+Physical media capabilities:
+    1000baseT(FD)
+    Pause(FD)
+    100base-TX(FD)
+    100base-TX(HD)
+    10base-T(FD)
+    10base-T(HD)
+Media Attachment Unit type: 30
+Vlan ID: - not advertised
+
+------------------------------------------------
+Local Intf: Gi2/0/10
+Chassis id: 0000.0000.0005
+Port id: Gi0
+Port Description: OOB Management Link
+System Name: INT2.example.com
+
+System Description:
+Cisco IOS Software [Fuji], ASR1000 Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.9.3, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2019 by Cisco Systems, Inc.
+Compiled Wed 20-Mar-19 08:02 by mcpre
+
+Time remaining: 103 seconds
+System Capabilities: B,R
+Enabled Capabilities: R
+Management Addresses:
+    IP: 10.0.0.14
+    IPV6: 2001:0DB8::2
+Auto Negotiation - not supported
+Physical media capabilities - not advertised
+Media Attachment Unit type - not advertised
+Vlan ID: - not advertised
+
+------------------------------------------------
+Local Intf: Te2/0/1
+Chassis id: 0000.0000.0006
+Port id: Ethernet1/46
+Port Description: SW1:Te1/0/2
+System Name: CORE2.example.com
+
+System Description:
+Cisco Nexus Operating System (NX-OS) Software 9.3(8)
+TAC support: http://www.cisco.com/tac
+Copyright (c) 2002-2021, Cisco Systems, Inc. All rights reserved.
+
+Time remaining: 96 seconds
+System Capabilities: B,R
+Enabled Capabilities: B,R
+Management Addresses:
+    Other: 2C FF 00 FF 00 FF 06
+Auto Negotiation - not supported
+Physical media capabilities - not advertised
+Media Attachment Unit type - not advertised
+Vlan ID: 1
+
+
+Total entries displayed: 6
+
+SW1#
+SW1#</textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="cdpShortHeader">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cdpShortExample" aria-expanded="false" aria-controls="cdpShortExample">
+                        <div class="container">
+                          <div class="row">
+                            <div class="col d-flex align-items-center">
+                              <h5 class="mt-1">Example: <code>show cdp neighbors</code></h5>
+                            </div>
+                            <div class="d-none d-md-block col col-md-1">
+                              <div class="d-flex align-items-center justify-content-end">
+                                <div class="flex-shrink-1 pe-2">
+                                  <h5 class="mt-1"><span class="badge bg-primary ">CDP-SHORT</span></h5>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </h2>
+                    <div id="cdpShortExample" class="accordion-collapse collapse" aria-labelledby="cdpShortHeader" data-bs-parent="#outputExamples">
+                      <div class="accordion-body">
+                        <div class="form-group textarea-container highlight">
+                          <textarea class="form-control example-textarea highlight bg-light" rows="8" readonly>SW2#show cdp neighbors
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone,
+                  D - Remote, C - CVTA, M - Two-port Mac Relay
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+000000000001     Gig 1/0/10        114                    Meraki MV Port 0
+WAP1             Gig 1/0/9         149              R T   AIR-AP380 Gig 0
+CORE2.example.com(SERIALNUM)
+                 Ten 1/1/4         152            R S I C N9K-C9318 Eth 1/41
+CORE1.example.com(SERIALNUM)
+                 Ten 1/1/3         152            R S I C N9K-C9318 Eth 1/41
+WAP2             Gig 1/0/48        161              R T   Unknown   Gig 0
+000000000002     Gig 1/0/40        179                    Meraki MV Port 0
+ROUTER1.example.com
+                 Gig 1/0/44        159             R B S  CISCO2901 Gig 0/0
+
+Total cdp entries displayed : 7
+SW2#</textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="lldpShortHeader">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lldpShortExample" aria-expanded="false" aria-controls="lldpShortExample">
+                        <div class="container">
+                          <div class="row">
+                            <div class="col d-flex align-items-center">
+                              <h5 class="mt-1">Example: <code>show lldp neighbors</code></h5>
+                            </div>
+                            <div class="d-none d-md-block col col-md-1">
+                              <div class="d-flex align-items-center justify-content-end">
+                                <div class="flex-shrink-1 pe-2">
+                                  <h5 class="mt-1"><span class="badge bg-success ">LLDP-SHORT</span></h5>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </h2>
+                    <div id="lldpShortExample" class="accordion-collapse collapse" aria-labelledby="lldpShortHeader" data-bs-parent="#outputExamples">
+                      <div class="accordion-body">
+                        <div class="form-group textarea-container highlight">
+                          <textarea class="form-control example-textarea highlight bg-light" rows="8" readonly>SW2#show lldp neighbors
+Capability codes:
+    (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+    (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+
+Device ID           Local Intf     Hold-time  Capability      Port ID
+CAM1                Gi1/0/40       120                        0
+CORE1.subdomain.examTe1/1/3        120        B,R             Ethernet1/41
+CAM2                Gi1/0/10       120                        0
+FW1                 Gi1/0/1        120        R               0
+WAP1                Gi1/0/9        120        B               0
+WAP2                Gi1/0/48       120        B               0
+CORE2.subdomain.examTe1/1/4        120        B,R             Ethernet1/41
+
+Total entries displayed: 7
+
+SW2#</textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr class="border-2 border-top border-secondary">
+              <div class="fs-6">
+                <h4><i class="fa-solid fa-magnifying-glass me-2"></i>Platform Support</h4>
+                <p>Command output from these platforms has been tested against Neighbor Parser. Other platforms may work, but have not been explicitly tested.</p>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>IOS (Classic)</th>
+                      <th>IOS-XE</th>
+                      <th>NX-OS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th><code>show cdp neighbors</code></th>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                    </tr>
+                    <tr>
+                      <th><code>show cdp neighbors detail</code></th>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                    </tr>
+                    <tr>
+                      <th><code>show lldp neighbors</code></th>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                    </tr>
+                    <tr>
+                      <th><code>show lldp neighbors detail</code></th>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                      <td class="text-success"><i class="fa-solid fa-xl fa-circle-check"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <hr class="border-2 border-top border-secondary">
+              <div class="fs-6">
+                <h4><i class="fa-solid fa-user-secret me-2"></i>Privacy</h4>
+                <p>Neighbor Parser is a <b>100% client-side application</b>. The website is completely static and sends none of your private data over the internet.</p>
+                <p>The code is open-source and is published on the <a href="https://github.com/PackeTsar/neighbor-parser/" target="_blank">GitHub page</a>.</p>
+                <p>You can use this webpage offline (with no network access) by either:
+                  <ol>
+                    <li class="mb-2">Loading this page while online, then setting your browser to offline or removing your network access. The site will fully operate while offline.</li>
+                    <li class="mb-2">Downloading the <a href="neighbor-parser-dist.zip">offline ZIP file</a>, unzipping it, and opening the <code>dist/index.html</code> file with your browser.</li>
+                  </ol>
+                </p>
+              </div>
+              <hr class="border-2 border-top border-secondary">
+              <div class="fs-6">
+                <h4><i class="fa-solid fa-bug me-2"></i>Bugs</h4>
+                <p>If you encouter a bug or would like to see a feature added to this web app, please <a class="btn btn-sm btn-info" href="https://github.com/PackeTsar/neighbor-parser/issues/new/choose" role="button" target="_blank">open an issue</a> on the GitHub page.</p>
+                <p>To contribute features or bug fixes, fork the repo and submit a merge request.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card text-center mt-5">
+        <div class="card-header">
+          <div class="container">
+            <div class="row">
+              <div class="col-xl"></div>
+              <div class="col d-flex align-items-center justify-content-center">
+                <span class="h5 mb-0 text-center"><i class="fa-solid fa-code me-2"></i>Neighbor Output</span>
+              </div>
+              <div class="col-xl col-12 text-end mt-xl-0 mt-3 p-0">
+                <div class="d-flex justify-content-end">
+                  <div class="pe-0">
+                    <button type="button" id="parseNeighbors" class="btn btn-success"><i class="fa-solid fa-circle-check me-2"></i>Parse</button>
+                    <button type="button" id="clearNeighborData" class="btn btn-outline-secondary"><i class="fa-solid fa-trash-can me-2"></i>Clear</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <textarea id="neighborData" class="form-control input-textarea" rows="10" placeholder='Paste output from "show cdp neighbors detail" or "show lldp neighbors detail" here' autofocus></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-5 mb-5">
+        <div class="card-header">
+          <div class="container">
+            <div class="row">
+              <div class="col-xl"></div>
+              <div class="col d-flex align-items-center justify-content-center">
+                <span class="h5 mb-0 text-center"><i class="fa-solid fa-diagram-project me-2"></i>Diagram</span>
+              </div>
+              <div class="col-xl col-12 text-end mt-xl-0 mt-3 p-0">
+                <div class="d-flex justify-content-end">
+                  <div class="pe-0">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button type="button" class="btn btn-outline-secondary zoom-in" data-bs-toggle="tooltip" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+                      <button type="button" class="btn btn-outline-secondary zoom-out" data-bs-toggle="tooltip" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+                      <button type="button" id="download_diagram_button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Download SVG"><i class="fa-solid fa-download"></i></button>
+                      <button type="button" id="diagram_settings_button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#diagramSettings"><i class="fa-solid fa-gear"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" id="diagram_wrapper">
+          <div id="diagram"></div>
+        </div>
+      </div>
+
+      <div class="card mt-5 mb-5">
+        <div class="card-header">
+          <div class="container">
+            <div class="row">
+              <div class="col-xl"></div>
+              <div class="col d-flex align-items-center justify-content-center">
+                <span class="h5 mb-0 text-center"><i class="fa-solid fa-table me-2"></i>Neighbors</span>
+              </div>
+              <div class="col-xl col-12 text-end mt-xl-0 mt-3 p-0">
+                <div class="d-flex justify-content-end">
+                  <div class="flex-shrink-1 pe-2">
+                    <div class="input-group input-group-sm">
+                      <div class="bg-white border-end-0 input-group-text"><i class="fa-solid fa-magnifying-glass"></i></div>
+                      <input type="text" class="form-control border-start-0" id="neighbor_search">
+                    </div>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div id="control_buttons" ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="neighborTable" class="table table-striped table-hover table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Local Interface</th>
+                  <th scope="col">Local Interface Short</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Remote Interface</th>
+                  <th scope="col">Remote Interface Short</th>
+                  <th scope="col">Remote Interface ID</th>
+                  <th scope="col">Platform</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">TTL</th>
+                  <th scope="col">System ID</th>
+                  <th scope="col">Capabilities</th>
+                  <th scope="col">Addresses</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <nav class="navbar fixed-bottom navbar-expand navbar-dark bg-dark">
+        <div class="container">
+            <ul class="navbar-nav ms-auto flex-nowrap">
+                <li class="nav-item me-4">
+                    <a class="navbar-text" href="https://github.com/PackeTsar/neighbor-parser/wiki/Versions" title="Version history" target="_blank" data-bs-toggle="tooltip">v1.7.0</a>
+                </li>
+                <li class="nav-item me-4">
+                    <a class="navbar-text" href="neighbor-parser-dist.zip" title="Download offline copy of website" data-bs-toggle="tooltip"><i class="fa-solid fa-cloud-arrow-down fa-lg"></i></a>
+                </li>
+                <li class="nav-item me-4">
+                    <a class="navbar-text" href="https://github.com/PackeTsar/neighbor-parser/" title="Visit GitHub page" target="_blank" data-bs-toggle="tooltip"><i class="fa-brands fa-github fa-xl"></i></a>
+                </li>
+                <li class="nav-item">
+                  <a class="navbar-text" href="https://www.buymeacoffee.com/packetsar" title="Buy me a coffee" target="_blank" data-bs-toggle="tooltip"><i class="fa-solid fa-mug-hot"></i></a>
+              </li>
+            </ul>
+        </div>
+      </nav>
+
+    </div>
+
+    <div class="modal fade" id="diagramSettings" tabindex="-1" aria-labelledby="diagramSettings" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Diagram Settings</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="h4 text-center">Zoom</p>
+            <span><p>Current: <span class="badge bg-secondary"><span id="current_zoom">100</span>%</span><span class="mx-2">&#8226;</span>New: <span class="badge bg-secondary"><span id="new_zoom">100</span>%</span></p>
+            <button type="button" class="btn btn-sm btn-outline-secondary zoom-in-stage"><i class="fa-solid fa-plus me-2"></i>In</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary zoom-out-stage"><i class="fa-solid fa-minus me-2"></i>Out</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary zoom-reset-current-stage">Reset to Current</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary zoom-reset-100-stage">Reset to 100%</button>
+            <hr>
+            <p class="h4 text-center">Auto Layout</p>
+            <div class="form-text">Rank Direction</div>
+            <select class="form-select" id="rank_direction" aria-label="Rank Direction">
+              <option selected value="LR">Left to Right</option>
+              <option value="RL">Right to Left</option>
+              <option value="TB">Top to Bottom</option>
+              <option value="BT">Bottom to Top</option>
+            </select>
+            <div class="form-text mt-4 mb-2">Rank Separation</div>
+            <div class="row">
+              <div class="col-11">
+                <div id="rank_separation_slider">
+                  <div id="rank_separation" class="ui-slider-handle"></div>
+                </div>
+              </div>
+              <div class="col-1" style="margin-top: -.4em;">
+                <i class="fa-solid fa-circle-info text-primary" data-bs-toggle="tooltip" data-bs-html="true" title="Separation of device<br>groups as a percentage<br>of frame width"></i>
+              </div>
+            </div>
+            <hr>
+            <p class="h4 text-center">Links</p>
+            <div class="form-text mb-2">Label Positions</div>
+            <div class="row">
+              <div class="col-11">
+                <div id="label_positions_slider">
+                  <div id="local_label" class="ui-slider-handle"></div>
+                  <div id="remote_label" class="ui-slider-handle"></div>
+                </div>
+              </div>
+              <div class="col-1" style="margin-top: -.4em;">
+                <i class="fa-solid fa-circle-info text-primary" data-bs-toggle="tooltip" data-bs-html="true" title="Position of labels<br>as a percentage<br>of link length"></i>
+              </div>
+            </div>
+            <div class="form-text mt-4 mb-2">Sibling Gap</div>
+            <div class="row">
+              <div class="col-11">
+                <div id="sibling_gap_slider">
+                  <div id="sibling_gap" class="ui-slider-handle"></div>
+                </div>
+              </div>
+              <div class="col-1" style="margin-top: -.4em;">
+                <i class="fa-solid fa-circle-info text-primary" data-bs-toggle="tooltip" data-bs-html="true" title="Separation (in px) of<br>parallel links between<br>devices"></i>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="apply_diagram_settings">Apply</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="static/copy.js"></script>
+    <script src="static/table.js"></script>
+    <script src="static/tooltips.js"></script>
+    <script src="bundle.js"></script>
+
+  </body>
+</html>

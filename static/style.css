@@ -1,0 +1,88 @@
+.input-textarea
+{
+   font-family: "Monaco", monospace !important;
+}
+.example-textarea
+{
+   font-family: "Courier New", monospace !important;
+}
+.dropdown-item{
+    margin-top: 3px;
+    margin-bottom: 3px;
+    border-style: solid !important;
+    border-width: 1px !important;
+    border-color: #212529 !important;
+}
+.dropdown-item.active{
+    background-color: #6c757d !important;
+    box-shadow: inset 0px 0px 5px #000000;
+}
+.dropdown-item.active:hover{
+    background-color: #495057 !important;
+}
+.accordion-button{
+    padding-top: .25rem !important;
+    padding-bottom: .25rem !important;
+}
+:not(pre) > code {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(27,31,35,.05);
+  border-radius: 6px;
+}
+li span { font-weight: normal; }
+.code-card {
+  max-height: 250px;
+}
+div.highlight button {
+  color: #6c757d;
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, .5);
+  padding: .5em .5em;
+  font-size: 1em;
+  position: absolute;
+  top: .25em;
+  right: 1.25em;
+  border-radius: 5px;
+}
+.textarea-container {
+  position: relative;
+}
+.textarea-container textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.textarea-container button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#diagram_wrapper {
+  resize: vertical;
+  overflow: auto;
+}
+.tooltip-inner {
+  max-width: 800px !important;
+  width: max-content !important;
+  text-align: left;
+  }
+.header-reference {
+  border: 1px solid gray;
+  background-color: #f7f7f7;
+  border-radius: 5px 5px 5px;
+  padding: 3px;
+}
+.ui-slider-handle {
+  width: 2em !important;
+  height: 1.6em !important;
+  top: 50% !important;
+  margin-top: -.8em;
+  text-align: center;
+  background-color: #0c6efd !important;
+  color: white !important; 
+}
+.ui-slider {
+  background-color: rgb(245, 245, 245) !important;
+}
